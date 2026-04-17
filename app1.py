@@ -161,10 +161,14 @@ If the user is engaging in discussion, try to steer them towards getting in touc
     
 
 if __name__ == "__main__":
-    me = Me()
-    import os
+    print("Starting app...")
 
+    me = Me()
+    print("Me class initialized")
+
+    import os
     port = int(os.environ.get("PORT", 7860))
+    print("PORT:", port)
 
     gr.ChatInterface(me.chat, type="messages").launch(
         server_name="0.0.0.0",
