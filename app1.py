@@ -88,7 +88,7 @@ class Me:
         self.client = Groq(api_key=api_key)
 
         self.name = "Md Faishal Khan"
-        
+
         reader = PdfReader("./me/Profile.pdf")
         self.linkedin = ""
         for page in reader.pages:
@@ -126,17 +126,27 @@ If the user is engaging in discussion, try to steer them towards getting in touc
     def chat(self, message, history):
 
         cleaned_history = []
-        for msg in history:
-            cleaned_history.append({
-                "role": msg.get("role"),
-                "content": msg.get("content"),
-            })
+        for item in history:
+            if isinstance(item, dict):
+                # messages-style (newer Gradio)
+                cleaned_history.append({
+                    "role": item.get("role"),
+                    "content": item.get("content"),
+                })
+            elif isinstance(item, (list, tuple)) and len(item) == 2:
+                # tuple-style (older Gradio default)
+                user_msg, bot_msg = item
+                if user_msg:
+                    cleaned_history.append({"role": "user", "content": user_msg})
+                if bot_msg:
+                    cleaned_history.append({"role": "assistant", "content": bot_msg})
 
         messages = (
             [{"role": "system", "content": self.system_prompt()}]
             + cleaned_history
             + [{"role": "user", "content": message}]
         )
+        # ... rest of your code stays the same
 
         done = False
 
@@ -177,7 +187,7 @@ if __name__ == "__main__":
     port = int(os.environ.get("PORT", 7860))
     print("PORT:", port)
 
-    gr.ChatInterface(me.chat, type="messages").launch(
+    gr.ChatInterface(me.chat).launch(
         server_name="0.0.0.0",
         server_port=port
     )
