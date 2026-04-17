@@ -81,8 +81,9 @@ class Me:
     def __init__(self):
         #self.openai = OpenAI()
         self.client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+        print("GROQ KEY:", os.getenv("GROQ_API_KEY"))
         self.name = "Md Faishal Khan"
-        reader = PdfReader("me/Profile.pdf")
+        reader = PdfReader("./me/Profile.pdf")
         self.linkedin = ""
         for page in reader.pages:
             text = page.extract_text()
