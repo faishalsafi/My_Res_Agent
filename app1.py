@@ -80,9 +80,15 @@ class Me:
 
     def __init__(self):
         #self.openai = OpenAI()
-        self.client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-        print("GROQ KEY:", os.getenv("GROQ_API_KEY"))
+        api_key = os.getenv("GROQ_API_KEY")
+
+        if not api_key:
+            raise ValueError("❌ GROQ_API_KEY is missing in environment variables")
+
+        self.client = Groq(api_key=api_key)
+
         self.name = "Md Faishal Khan"
+        
         reader = PdfReader("./me/Profile.pdf")
         self.linkedin = ""
         for page in reader.pages:
